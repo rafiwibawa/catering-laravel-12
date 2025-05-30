@@ -24,6 +24,11 @@
     <!-- Custom styles for this page -->
     <link href="{{ asset('cms/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.15.6/sweetalert2.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+  
+
 </head>
 
 <body id="page-top">
@@ -72,14 +77,14 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">Select "Keluar" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="/admin/logout">Logout</a>
+                    <a class="btn btn-primary" href="/admin/logout">Keluar</a>
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('cms/vendor/jquery/jquery.min.js') }}"></script>
@@ -89,8 +94,12 @@
     <script src="{{ asset('cms/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="{{ asset('cms/js/sb-admin-2.min.js') }}"></script>
+    <script src="{{ asset('cms/js/sb-admin-2.min.js') }}"></script>  
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/10.15.6/sweetalert2.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  
     @stack('script')
 
 </body>

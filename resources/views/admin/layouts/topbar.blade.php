@@ -54,9 +54,7 @@
                     Logout
                 </a>
             </div>
-        </li>
-
-    </ul>
-
+        </li> 
+    </ul> 
 </nav>
 <!-- End of Topbar -->

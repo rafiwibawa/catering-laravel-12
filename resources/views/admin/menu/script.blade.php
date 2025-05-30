@@ -44,6 +44,13 @@
                         }
                     },
                     { data: 'category_name' },
+                    { data: 'diskon' },
+                    { 
+                        data: 'is_home',
+                        render: function(data) {
+                            return data == 1 ? 'Ya' : 'Tidak';
+                        }  
+                    },
                     { data: 'created_by_name' },   
                     {
                     data: 'id',
@@ -52,12 +59,9 @@
                     className: 'text-center',
                     render: function(data) {
                         return `
-                            <a href="/menus/${data}/edit" class="btn btn-circle btn-sm btn-warning" title="Edit">
+                            <a href="/menus/${data}/edit" class="btn btn-circle btn-sm btn-warning btn-edit" title="Edit">
                                 <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="/menus/${data}" class="btn btn-circle btn-sm btn-info" title="View">
-                                <i class="fas fa-eye"></i>
-                            </a>
+                            </a> 
                             <button class="btn btn-circle btn-sm btn-danger btn-delete" data-id="${data}" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
@@ -112,33 +116,33 @@
 
             $(document).on('click', '.btn-edit', function(e) {
                 e.preventDefault();
-                var id = $(this).data('id');
+                const row = $(this).closest('tr');
+                const data = menu_table.row(row).data();
+                    
+                if (data) { 
+                    $('#modalCompanyLabel').text('Edit Menu');
+                    $('#menu_form').attr('action', `/admin/menus/${data.id}`);
+                    $('#menu_form').attr('method', 'POST'); 
+                    $('#menu_form').find('input[name="_method"]').remove(); 
+                    $('#menu_form').append('<input type="hidden" name="_method" value="PUT">');
+                    $('#menu_form')[0].reset();
+ 
+                    $('#name').val(data.name);
+                    $('#description').val(data.description);
+                    $('#price').val(data.price);
+                    loadCategories(data.category_id);
+                    $('#diskon').val(data.diskon); 
+                    $('#is_home').prop('checked', data.is_home);
 
-                $.ajax({
-                    url: `/admin/menus/${id}/edit`,
-                    type: 'GET',
-                    success: function(data) {
-                        // Isi form modal dengan data dari server
-                        $('#modalCompanyLabel').text('Edit Menu');
-                        $('#menu_form').attr('action', `/admin/menus/${id}`);
-                        $('#menu_form').attr('method', 'POST');
-                        $('#menu_form').append('<input type="hidden" name="_method" value="PUT">');
-                        $('#menu_id').val(data.id);
-                        $('#name').val(data.name);
-                        $('#description').val(data.description);
-                        $('#price').val(data.price);
-                        $('#category_id').val(data.category_id);
-                        if(data.image) {
-                          $('#image_preview').html(`<img src="/storage/${data.image}" style="max-height:100px;" alt="Preview"/>`);
-                        } else {
-                          $('#image_preview').html('');
-                        }
-                        $('#modal_company').modal('show');
-                    },
-                    error: function() {
-                        toastr.error('Gagal mengambil data menu');
+                    if(data.image) {
+                        $('#image_preview').html(`<img src="/storage/${data.image}" style="max-height:100px;" alt="Preview"/>`);
+                    } else {
+                        $('#image_preview').html('');
                     }
-                });
+                    $('#modal_company').modal('show');
+                }else {
+                    toastr.error('Data tidak ditemukan di tabel');
+                } 
             });
  
             $('#btnAddMenu').on('click', function() {
@@ -164,6 +168,9 @@
                     url: $(this).attr('action'),
                     type: $(this).attr('method'),
                     data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     processData: false,
                     contentType: false,
                 })
@@ -179,9 +186,9 @@
                 });
             });
           },
-          loadCategories = () => {
+          loadCategories = (selectedId = null) => {
             $.ajax({
-                url: '/admin/categories/list',
+                url: 'categories/list/all',
                 type: 'GET',
                 success: function(categories) {
                     let $categorySelect = $('#category_id');
@@ -191,33 +198,38 @@
                     categories.forEach(function(category) {
                         $categorySelect.append(`<option value="${category.id}">${category.name}</option>`);
                     });
+
+                    // Set nilai setelah semua opsi dimuat
+                    if (selectedId) {
+                        $categorySelect.val(selectedId).trigger('change');
+                    }
                 },
                 error: function() {
                     toastr.error('Gagal memuat kategori');
                 }
             });
-        };
+        }; 
 
-          $('#image').on('change', function() {
+        $('#image').on('change', function() {
             var input = this;
             if (input.files && input.files[0]) {
-              var reader = new FileReader();
-              reader.onload = function(e) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
                 $('#image_preview').html(`<img src="${e.target.result}" style="max-height:100px;" alt="Preview"/>`);
-              };
-              reader.readAsDataURL(input.files[0]);
+                };
+                reader.readAsDataURL(input.files[0]);
             } else {
-              $('#image_preview').html('');
+                $('#image_preview').html('');
             }
-          });
+        });
 
-          const showModal = function (selector) {
-              $('#' + selector).modal('show');
-          };
-  
-          const hideModal = function (selector) {
-              $('#' + selector).modal('hide');
-          };
+        const showModal = function (selector) {
+            $('#' + selector).modal('show');
+        };
+
+        const hideModal = function (selector) {
+            $('#' + selector).modal('hide');
+        };
   
       };
   

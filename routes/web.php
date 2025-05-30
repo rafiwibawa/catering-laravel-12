@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\AdminController;
 
 use App\Http\Controllers\Customer\AuthController;
 use App\Http\Controllers\Customer\HomeController;
@@ -37,7 +39,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::resource('menus', AdminMenuController::class);
         Route::post('/menus/dt', [AdminMenuController::class, 'dt'])->name('menus.dt');
 
-        Route::get('/admin/categories/list', [CategoryController::class, 'list'])->name('categories.list');
+        Route::resource('categories', CategoryController::class);
+        Route::post('/categories/dt', [CategoryController::class, 'dt'])->name('categories.dt');
+        Route::get('/categories/list/all', [CategoryController::class, 'list'])->name('categories.list');
+
+        Route::resource('customers', CustomerController::class);
+        Route::post('/customers/dt', [CustomerController::class, 'dt'])->name('customers.dt');
+
+        Route::resource('users', AdminController::class);
+        Route::post('/users/dt', [AdminController::class, 'dt'])->name('admin.dt');
     });
 });
 

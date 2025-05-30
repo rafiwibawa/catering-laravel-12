@@ -43,7 +43,7 @@
             <div class="box">
               <div>
                 <div class="img-box">
-                  <img src="{{ asset('customer/images/' . $item->image) }}" alt="">
+                  <img src="{{ asset('storage/' . $item->image) }}" alt="">
                 </div>
                 <div class="detail-box">
                   <h5>{{ $item->name }}</h5>

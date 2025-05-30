@@ -6,7 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    protected $fillable = ['category_id', 'name', 'description', 'image', 'price', 'created_by'];
+    protected $fillable = [
+        'category_id', 
+        'name', 
+        'description', 
+        'image', 
+        'price', 
+        'created_by', 
+        'is_home', 
+        'diskon'
+    ];
 
     public function creator()
     {
