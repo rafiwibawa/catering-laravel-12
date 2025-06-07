@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Customer;
+use App\Models\Cart;
+use App\Models\CartItem;
 
 use Hash;
 use Redirect;
@@ -28,9 +30,15 @@ class AuthController extends BaseApiController
                 return $this->sendErrorResponse(false, "Login failed", ['message' => 'Invalid credentials'], 401);
             }
 
+            $cart = Cart::where('customer_id', $user->customer->id)->first();
+
+            $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
+            $cartCount = $cartItems->sum('quantity');
+
             $data = [
                 'user' => $user,
                 'token' => $user->createToken('api-token')->plainTextToken,
+                'cart_count' => $cartCount ?? 0,
             ];
 
             return $this->sendSuccessResponse(true, "Login Success", $data, 200);

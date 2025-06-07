@@ -50,8 +50,7 @@ class MenuController extends BaseApiController
             $cart = Cart::firstOrCreate([
                 'customer_id' => Auth::user()->customer->id
             ]);
-
-            dd($cart);
+ 
             // Tambahkan atau update quantity jika sudah ada
             $item = CartItem::where('cart_id', $cart->id)->where('menu_id', $menu->id)->first();
 
@@ -70,14 +69,10 @@ class MenuController extends BaseApiController
             $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
             $cartCount = $cartItems->sum('quantity');
 
-            // Render partial HTML dropdown
-            $dropdownHtml = view('customer.partials.cart_dropdown', compact('cartItems'))->render();
-
             return response()->json([
                 'success' => true,
                 'message' => 'Produk berhasil ditambahkan ke keranjang.',
-                'cart_count' => $cartCount,
-                'dropdown_html' => $dropdownHtml,
+                'cart_count' => $cartCount, 
             ]);
         } catch (\Exception $e) {
             return response()->json([
