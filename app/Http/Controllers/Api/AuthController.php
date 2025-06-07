@@ -31,9 +31,11 @@ class AuthController extends BaseApiController
             }
 
             $cart = Cart::where('customer_id', $user->customer->id)->first();
-
-            $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
-            $cartCount = $cartItems->sum('quantity');
+            $cartCount = 0;
+            if ($cart != null) { 
+                $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
+                $cartCount = $cartItems->sum('quantity');
+            }
 
             $data = [
                 'user' => $user,
