@@ -53,13 +53,19 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::redirect('/', '/home');
 Route::get('/home', [HomeController::class, 'index']);
-Route::get('/menu', [MenuController::class, 'index']);
+Route::get('/menu', [MenuController::class, 'index'])->name('customer.menu');
 Route::get('/menu/search', [MenuController::class, 'search'])->name('customer.menu.search');
 Route::get('/menu/add-to-cart/{id}', [MenuController::class, 'addToCart']); 
  
 Route::middleware(['auth', 'role:customer'])->group(function () { 
     Route::get('/about', [AboutController::class, 'index']);
     Route::get('/profile', [MenuController::class, 'profile'])->name('profile');
+
     Route::get('/cart', [CartController::class, 'index']);
+    Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
+    Route::post('/duitku/callback', [PaymentController::class, 'callback'])->name('duitku.callback');
+    Route::get('/duitku/return', [PaymentController::class, 'return'])->name('duitku.return');
+
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });

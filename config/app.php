@@ -123,4 +123,10 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'duitku' => [
+        'merchant_code' => env('DUITKU_MERCHANT_CODE', 'DS23157'),
+        'api_key' => env('DUITKU_API_KEY', 'c883756ffcd82c3e9822c4ad020e88b9'),
+        'payment_url' => env('DUITKU_PAYMENT_URL', 'https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry'),
+    ], 
+
 ];

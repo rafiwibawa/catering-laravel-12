@@ -34,7 +34,7 @@
             <li class="nav-item @if($segment == 'order') {{'active'}} @endif">
                 <a class="nav-link" href="/admin/order">
                     <i class="fas fa-fw fa-cart-plus"></i>
-                    <span>Order</span></a>
+                    <span>Orders</span></a>
             </li>
 
             <!-- Divider -->
