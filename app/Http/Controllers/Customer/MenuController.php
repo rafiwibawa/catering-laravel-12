@@ -24,44 +24,48 @@ class MenuController extends BaseController
         return view('customer.menu.index', compact('data'));
     }  
 
-    public function addToCart($id)
+    public function addToCart(Request $request, $id)
     {
         try {
-            if (!Auth::check()) { // Memeriksa apakah pengguna sudah login
+            if (!Auth::check()) { 
                 return $this->sendErrorResponse(400, false, "Failed", ["Please login first"]);
             }
-
+    
             $menu = Menu::find($id);
-
+    
             if (!$menu) {
                 return $this->sendErrorResponse(400, false, "Failed", ["Menu not found"]);
             }
-
+    
+            $qty = max(1, (int) $request->input('qty', 1)); // Default 1, minimal 1
+    
             $cart = Cart::firstOrCreate([
                 'customer_id' => Auth::user()->customer->id
             ]);
-
-            // Tambahkan atau update quantity jika sudah ada
-            $item = CartItem::where('cart_id', $cart->id)->where('menu_id', $menu->id)->first();
-
+    
+            // Cek apakah item sudah ada
+            $item = CartItem::where('cart_id', $cart->id)
+                ->where('menu_id', $menu->id)
+                ->first();
+    
             if ($item) {
-                $item->quantity += 1;
+                $item->quantity += $qty;
                 $item->save();
             } else {
                 CartItem::create([
                     'cart_id' => $cart->id,
                     'menu_id' => $menu->id,
-                    'quantity' => 1
+                    'quantity' => $qty
                 ]);
             }
-
-            // Ambil ulang isi cart
+    
+            // Hitung ulang isi keranjang
             $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
             $cartCount = $cartItems->sum('quantity');
-
+    
             // Render partial HTML dropdown
             $dropdownHtml = view('customer.partials.cart_dropdown', compact('cartItems'))->render();
-
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Produk berhasil ditambahkan ke keranjang.',
@@ -75,6 +79,7 @@ class MenuController extends BaseController
             ], 400);
         }
     }
+    
 
     public function search(Request $request)
     {

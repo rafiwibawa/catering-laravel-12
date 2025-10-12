@@ -15,12 +15,17 @@ use Auth;
 
 class MenuController extends BaseApiController
 {  
-    public function listMenu()
+    public function listMenu(Request $request)
     {   
         try {
-            $menus = Menu::with('category') 
-                ->get()
-                ->map(function ($menu) {
+            $categoryId = $request->query('category_id');
+
+            $menus = Menu::with('category')
+                ->when($categoryId, function ($query, $categoryId) {
+                    return $query->where('category_id', $categoryId);
+                })
+                ->paginate(10)  
+                ->through(function ($menu) {
                     return [
                         'id' => $menu->id,
                         'name' => $menu->name,
@@ -28,11 +33,22 @@ class MenuController extends BaseApiController
                         'image' => $menu->image ? Storage::disk('public')->url($menu->image) : null,
                         'price' => $menu->price,
                         'category_id' => $menu->category_id,
-                        'category' => $menu->category,  
+                        'category' => $menu->category,
                     ];
                 });
 
             return $this->sendSuccessResponse(true, "Success", $menus, 200);
+        } catch (\Throwable $e) {
+            return $this->sendErrorResponse(false, "failed", ['exception' => $e->getMessage()], 500);
+        }
+    }
+
+    public function listCategories(Request $request)
+    {   
+        try {
+            $categories = Category::all();
+
+            return $this->sendSuccessResponse(true, "Success", $categories, 200);
         } catch (\Throwable $e) {
             return $this->sendErrorResponse(false, "failed", ['exception' => $e->getMessage()], 500);
         }

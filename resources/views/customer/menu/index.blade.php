@@ -8,14 +8,19 @@
       <h2>Our Menu</h2>
     </div>
 
-    {{-- Form Budget dan Jumlah Box --}}
-    <form method="GET" action="{{ route('customer.menu.search') }}" class="mb-4 text-center mt-4">
-      <div class="d-flex justify-content-center flex-wrap gap-2">
-        <input type="number" name="budget" class="form-control w-auto" placeholder="Budget (Rp)" required value="{{ request('budget') }}">
-        <input type="number" name="quantity" class="form-control w-auto" placeholder="Jumlah Pcs" required value="{{ request('quantity') }}">
-        <button type="submit" class="btn btn-primary">Cari Menu</button>
-      </div>
-    </form>
+    <!-- Trigger Button -->
+    <div class="text-center mt-4 mb-4">
+      <button type="button" 
+              onclick="document.getElementById('searchModal').style.display='flex'"
+              style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border: none; padding: 14px 28px; border-radius: 12px; font-weight: 600; font-size: 16px; color: #1f2937; box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4); transition: all 0.3s ease; cursor: pointer;"
+              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(251, 191, 36, 0.5)'"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(251, 191, 36, 0.4)'">
+          <svg style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          Cari Menu by Budget
+      </button>
+    </div>
 
     {{-- Informasi Harga Maksimum --}}
     @if (request()->has('budget') && request()->has('quantity'))
@@ -76,6 +81,7 @@
   </div>
 </section>
 
+@include('customer.menu.modal')
 @endsection
 
 @push('style')

@@ -51,30 +51,31 @@ class CartController extends Controller
         $merchantOrderId = 'INV-' . time() . '-' . $customer->id;
 
         DB::beginTransaction();
-        try {
+        try { 
             // 1. Buat Order
             $order = Order::create([
                 'order_code'    => $merchantOrderId,
                 'customer_id'   => $customer->id,
                 'order_date'    => now(),
-                'delivery_date' => null, // bisa isi kalau ada estimasi
+                'delivery_date' => null,  
                 'status'        => 'pending',
             ]);
 
             // 2. Simpan OrderItem (bulk insert biar efisien)
             $orderItems = $cartItems->map(function ($item) use ($order) {
+                
                 return [
                     'order_id'   => $order->id,
                     'menu_id'    => $item->menu_id,
                     'quantity'   => $item->quantity,
-                    'subtotal'   => $item->quantity * $item->price,
+                    'subtotal'   => $item->quantity * $item->menu->price,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
             })->toArray();
 
             OrderItem::insert($orderItems);
-
+ 
             // 3. Buat order untuk Duitku
             $orderPayload = [
                 "merchantOrderId"  => $merchantOrderId,

@@ -15,6 +15,7 @@ use App\Http\Controllers\Customer\HomeController;
 use App\Http\Controllers\Customer\MenuController;
 use App\Http\Controllers\Customer\AboutController;
 use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\TransactionController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
@@ -54,8 +55,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::redirect('/', '/home');
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/menu', [MenuController::class, 'index'])->name('customer.menu');
-Route::get('/menu/search', [MenuController::class, 'search'])->name('customer.menu.search');
-Route::get('/menu/add-to-cart/{id}', [MenuController::class, 'addToCart']); 
  
 Route::middleware(['auth', 'role:customer'])->group(function () { 
     Route::get('/about', [AboutController::class, 'index']);
@@ -63,6 +62,12 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
 
     Route::get('/cart', [CartController::class, 'index']);
     Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
+    Route::post('/menu/add-to-cart/{id}', [MenuController::class, 'addToCart']); 
+    Route::get('/menu/search', [MenuController::class, 'search'])->name('customer.menu.search');
+
+    Route::get('/transaction', [TransactionController::class, 'index']); 
+    Route::get('/transaction/data', [TransactionController::class, 'data']);
 
     Route::post('/duitku/callback', [PaymentController::class, 'callback'])->name('duitku.callback');
     Route::get('/duitku/return', [PaymentController::class, 'return'])->name('duitku.return');

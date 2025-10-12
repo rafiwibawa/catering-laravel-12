@@ -169,6 +169,72 @@
     });
   </script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const profileContainer = document.getElementById('profile-container');
+    const profileButton = document.getElementById('profile-button');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const chevronIcon = document.getElementById('chevron-icon');
+  
+    if (profileButton && profileDropdown) {
+      // Toggle dropdown
+      profileButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isActive = profileDropdown.style.opacity === '1';
+        
+        if (isActive) {
+          profileDropdown.style.opacity = '0';
+          profileDropdown.style.visibility = 'hidden';
+          profileDropdown.style.transform = 'translateY(-10px)';
+          chevronIcon.style.transform = 'rotate(0deg)';
+          profileButton.style.backgroundColor = 'transparent';
+        } else {
+          profileDropdown.style.opacity = '1';
+          profileDropdown.style.visibility = 'visible';
+          profileDropdown.style.transform = 'translateY(0)';
+          chevronIcon.style.transform = 'rotate(180deg)';
+          profileButton.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+        }
+      });
+  
+      // Hover effect for button
+      profileButton.addEventListener('mouseenter', function() {
+        if (profileDropdown.style.opacity !== '1') {
+          this.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+        }
+      });
+      
+      profileButton.addEventListener('mouseleave', function() {
+        if (profileDropdown.style.opacity !== '1') {
+          this.style.backgroundColor = 'transparent';
+        }
+      });
+  
+      // Close when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!profileContainer.contains(e.target)) {
+          profileDropdown.style.opacity = '0';
+          profileDropdown.style.visibility = 'hidden';
+          profileDropdown.style.transform = 'translateY(-10px)';
+          chevronIcon.style.transform = 'rotate(0deg)';
+          profileButton.style.backgroundColor = 'transparent';
+        }
+      });
+  
+      // Close when pressing Escape
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          profileDropdown.style.opacity = '0';
+          profileDropdown.style.visibility = 'hidden';
+          profileDropdown.style.transform = 'translateY(-10px)';
+          chevronIcon.style.transform = 'rotate(0deg)';
+          profileButton.style.backgroundColor = 'transparent';
+        }
+      });
+    }
+  });
+  </script>
+
 </body>
 
 </html>

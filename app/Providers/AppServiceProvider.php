@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('*', function ($view) {
-            if (!request()->is('about', 'profile', 'cart', '/', 'home', 'menu', 'menu/search', 'menu/add-to-cart/*')) {
+            if (!request()->is('about', 'profile', 'cart', '/', 'home', 'menu', 'menu/search', 'menu/add-to-cart/*', 'transaction')) {
                 return;
             }
     
