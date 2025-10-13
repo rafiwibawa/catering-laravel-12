@@ -110,4 +110,86 @@ class CartController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
+    public function removeItem($id)
+    {
+        try {
+            $customerId = Auth::user()->customer->id;
+            $cart = Cart::where('customer_id', $customerId)->first();
+
+            if (!$cart) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart tidak ditemukan.'
+                ]);
+            }
+
+            $item = CartItem::where('cart_id', $cart->id)
+                ->where('id', $id)
+                ->first();
+
+            if (!$item) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Item tidak ditemukan di cart.'
+                ]);
+            }
+
+            $item->delete();
+
+            $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
+            $cartCount = $cartItems->count();
+    
+            // Render partial HTML dropdown
+            $dropdownHtml = view('customer.partials.cart_dropdown', compact('cartItems'))->render();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Item berhasil dihapus dari cart.',
+                'cart_count' => $cartCount,
+                'dropdown_html' => $dropdownHtml,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function plusItem($id)
+    {
+        try {
+            $cartItem = CartItem::find($id);
+            $cartItem->quantity++;
+            $cartItem->save();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function minusItem($id)
+    {
+        try {
+            $cartItem = CartItem::find($id);
+
+            if (!$cartItem) {
+                return redirect()->back()->with('error', 'Item tidak ditemukan.');
+            }
+
+            if ($cartItem->quantity > 1) {
+                $cartItem->quantity--;
+                $cartItem->save();
+            } else {
+                // Jika quantity sudah 1, hapus item
+                $cartItem->delete();
+            }
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
 }

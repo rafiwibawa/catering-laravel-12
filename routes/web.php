@@ -16,6 +16,7 @@ use App\Http\Controllers\Customer\MenuController;
 use App\Http\Controllers\Customer\AboutController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\TransactionController;
+use App\Http\Controllers\Customer\ProfileController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
@@ -58,16 +59,21 @@ Route::get('/menu', [MenuController::class, 'index'])->name('customer.menu');
  
 Route::middleware(['auth', 'role:customer'])->group(function () { 
     Route::get('/about', [AboutController::class, 'index']);
-    Route::get('/profile', [MenuController::class, 'profile'])->name('profile');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
     Route::get('/cart', [CartController::class, 'index']);
     Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::delete('/cart/remove-item/{id}', [CartController::class, 'removeItem']);
+    Route::post('/cart/plus/{id}', [CartController::class, 'plusItem'])->name('cart.plus');
+    Route::post('/cart/minus/{id}', [CartController::class, 'minusItem'])->name('cart.minus');
+    
 
     Route::post('/menu/add-to-cart/{id}', [MenuController::class, 'addToCart']); 
     Route::get('/menu/search', [MenuController::class, 'search'])->name('customer.menu.search');
 
     Route::get('/transaction', [TransactionController::class, 'index']); 
     Route::get('/transaction/data', [TransactionController::class, 'data']);
+    Route::get('/transaction/invoice/{id}', [TransactionController::class, 'invoice'])->name('transaction.invoice');
 
     Route::post('/duitku/callback', [PaymentController::class, 'callback'])->name('duitku.callback');
     Route::get('/duitku/return', [PaymentController::class, 'return'])->name('duitku.return');

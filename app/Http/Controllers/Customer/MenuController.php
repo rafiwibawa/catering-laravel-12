@@ -61,7 +61,7 @@ class MenuController extends BaseController
     
             // Hitung ulang isi keranjang
             $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
-            $cartCount = $cartItems->sum('quantity');
+            $cartCount = $cartItems->count();
     
             // Render partial HTML dropdown
             $dropdownHtml = view('customer.partials.cart_dropdown', compact('cartItems'))->render();

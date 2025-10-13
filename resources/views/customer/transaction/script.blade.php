@@ -3,7 +3,7 @@
         let currentPage = 1;
         let transactions = [];
     
-        var _componentPage = function(){
+        var _componentPage = function() {
     
             $(document).ready(function() { 
                 initAction();
@@ -16,11 +16,7 @@
                     loadTransactions();
                 });
     
-                $(document).on('click', '.btn-detail', function() {
-                    const transactionId = $(this).data('id');
-                    showTransactionDetail(transactionId);
-                });
-    
+                // klik pagination
                 $(document).on('click', '.page-link', function(e) {
                     e.preventDefault();
                     const page = $(this).data('page');
@@ -28,6 +24,13 @@
                         currentPage = page;
                         loadTransactions();
                     }
+                });
+    
+                // klik tombol invoice
+                $(document).on('click', '.btn-invoice', function(e) {
+                    e.preventDefault();
+                    const url = $(this).attr('href');
+                    openInvoice(url);
                 });
             }
     
@@ -99,8 +102,14 @@
                             <td>${transaction.description}</td>
                             <td class="fw-bold">${formattedAmount}</td>
                             <td>${statusBadge}</td>
-                            <td><button class="btn btn-sm btn-detail" data-id="${transaction.id}"><i class="fa fa-eye"></i> Detail</button></td>
-                        </tr>
+                            <td>
+                                <a href="transaction/invoice/${transaction.id}" 
+                                   class="btn btn-sm btn-outline-primary btn-invoice d-flex align-items-center gap-1">
+                                    <i class="fa fa-print"></i> 
+                                    <span>Invoice</span>
+                                </a>
+                            </td>
+                        </tr>  
                     `;
                 });
     
@@ -148,29 +157,6 @@
                 $('#totalAmount').text(formatCurrency(stats.amount));
             }
     
-            const showTransactionDetail = (transactionId) => {
-                const transaction = transactions.find(t => t.id === transactionId);
-                if (!transaction) return;
-    
-                const statusBadge = getStatusBadge(transaction.status);
-                const formattedDate = formatDate(transaction.date);
-                const formattedAmount = formatCurrency(transaction.amount);
-    
-                const detailHtml = `
-                    <div class="p-4">
-                        <h6 class="fw-bold mb-3">Detail Transaksi</h6>
-                        <p><strong>ID:</strong> ${transaction.id}</p>
-                        <p><strong>Tanggal:</strong> ${formattedDate}</p>
-                        <p><strong>Status:</strong> ${statusBadge}</p>
-                        <p><strong>Jumlah:</strong> ${formattedAmount}</p>
-                        <p><strong>Deskripsi:</strong> ${transaction.description}</p>
-                        ${transaction.notes ? `<p><strong>Catatan:</strong> ${transaction.notes}</p>` : ''}
-                    </div>
-                `;
-                $('#detailModalBody').html(detailHtml);
-                $('#detailModal').modal('show');
-            }
-    
             const getStatusBadge = (status) => {
                 const badges = {
                     'pending': '<span class="badge bg-warning text-dark">Pending</span>',
@@ -188,10 +174,23 @@
             const formatCurrency = (amount) => {
                 return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
             }
+    
+            // --- Tambahan: fungsi buka invoice + auto print ---
+            const openInvoice = (url) => {
+                const newTab = window.open(url, '_blank');
+    
+                const checkReady = setInterval(() => {
+                    if (newTab.document.readyState === 'complete') {
+                        clearInterval(checkReady);
+                        newTab.focus();
+                        newTab.print();
+                    }
+                }, 500);
+            }
         };
     
         return {
-            init: function(){
+            init: function() {
                 _componentPage();
             }
         }

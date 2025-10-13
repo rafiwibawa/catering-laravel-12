@@ -81,4 +81,11 @@ class TransactionController extends Controller
             'stats' => $stats,
         ]);
     }
+
+    public function invoice($order_code)
+    {
+        $order = Order::where('order_code', $order_code)->with('customer', 'items.menu')->first();
+        
+        return view('customer.print.invoice', compact('order'));
+    }
 }

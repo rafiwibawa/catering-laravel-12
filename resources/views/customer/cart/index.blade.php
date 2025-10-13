@@ -35,7 +35,7 @@
                 $subtotal = $item->menu->price * $item->quantity;
                 $grandTotal += $subtotal;
               @endphp
-              <div class="cart-item" data-item="{{ $index }}">
+              <div class="cart-item" data-item="{{ $index }}" data-id="{{ $item->id }}">
                 <div class="item-image">
                   @if($item->menu->image)
                     <img src="{{ asset('storage/'.$item->menu->image) }}" 
@@ -65,13 +65,21 @@
                     <div class="quantity-section">
                       <span class="quantity-label">Jumlah</span>
                       <div class="quantity-controls">
-                        <button class="quantity-btn minus" type="button" data-action="decrease">
-                          <i class="fa fa-minus"></i>
-                        </button>
+                        <form action="{{ route('cart.minus', $item->id) }}" method="POST" style="display:inline;">
+                          @csrf
+                          <button class="quantity-btn minus" type="submit">
+                            <i class="fa fa-minus"></i>
+                          </button>
+                        </form>
+                      
                         <input type="number" class="quantity-input" value="{{ $item->quantity }}" min="1" readonly>
-                        <button class="quantity-btn plus" type="button" data-action="increase">
-                          <i class="fa fa-plus"></i>
-                        </button>
+                      
+                        <form action="{{ route('cart.plus', $item->id) }}" method="POST" style="display:inline;">
+                          @csrf
+                          <button class="quantity-btn plus" type="submit">
+                            <i class="fa fa-plus"></i>
+                          </button>
+                        </form>
                       </div>
                     </div>
 
@@ -273,143 +281,13 @@
     @endif
   </div>
 </section>
-
-@extends('customer.cart.css')
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const paymentTypes = document.querySelectorAll('input[name="payment_type"]');
-    
-    paymentTypes.forEach(type => {
-      type.addEventListener('change', function() {
-        // Hide all bank selections
-        document.querySelectorAll('.bank-selection').forEach(selection => {
-          selection.style.display = 'none';
-          // Disable all sub-options
-          selection.querySelectorAll('input[type="radio"]').forEach(input => {
-            input.disabled = true;
-            input.required = false;
-          });
-        });
-        
-        // Reset chevron icons
-        document.querySelectorAll('.fa-chevron-down, .fa-chevron-up').forEach(icon => {
-          icon.classList.remove('fa-chevron-up');
-          icon.classList.add('fa-chevron-down');
-        });
-        
-        // Show selected payment method's options
-        if (this.value === 'virtual_account') {
-          const vaBanks = document.getElementById('va_banks');
-          vaBanks.style.display = 'block';
-          vaBanks.querySelectorAll('input[type="radio"]').forEach(input => {
-            input.disabled = false;
-            input.required = true;
-          });
-          // Rotate chevron
-          this.parentElement.querySelector('i.fa-chevron-down').classList.replace('fa-chevron-down', 'fa-chevron-up');
-        } else if (this.value === 'ewallet') {
-          const ewalletOptions = document.getElementById('ewallet_options');
-          ewalletOptions.style.display = 'block';
-          ewalletOptions.querySelectorAll('input[type="radio"]').forEach(input => {
-            input.disabled = false;
-            input.required = true;
-          });
-          // Rotate chevron
-          this.parentElement.querySelector('i.fa-chevron-down').classList.replace('fa-chevron-down', 'fa-chevron-up');
-        } else if (this.value === 'cod') {
-          // For COD, set payment_method manually
-          // You might want to add a hidden input for this
-          const hiddenInput = document.createElement('input');
-          hiddenInput.type = 'hidden';
-          hiddenInput.name = 'payment_method';
-          hiddenInput.value = 'cod';
-          hiddenInput.id = 'cod_payment_method';
-          
-          // Remove previous hidden input if exists
-          const existingHidden = document.getElementById('cod_payment_method');
-          if (existingHidden) existingHidden.remove();
-          
-          this.closest('form').appendChild(hiddenInput);
-        }
-      });
-    });
-    
-    // Prevent form submission if VA or E-Wallet selected but no bank chosen
-    const form = document.querySelector(`form[action="{{ route('cart.checkout') }}"]`);
-    form.addEventListener('submit', function(e) {
-      const selectedType = document.querySelector('input[name="payment_type"]:checked');
-      
-      if (!selectedType) {
-        e.preventDefault();
-        alert('Silakan pilih metode pembayaran terlebih dahulu');
-        return;
-      }
-      
-      if (selectedType.value === 'virtual_account' || selectedType.value === 'ewallet') {
-        const selectedBank = document.querySelector('input[name="payment_method"]:checked');
-        if (!selectedBank) {
-          e.preventDefault();
-          alert('Silakan pilih bank/e-wallet terlebih dahulu');
-          return;
-        }
-      }
-    });
-  });
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Quantity controls
-    document.querySelectorAll('.quantity-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const action = this.dataset.action;
-            const quantityInput = this.parentElement.querySelector('.quantity-input');
-            const currentValue = parseInt(quantityInput.value);
-            
-            if (action === 'increase') {
-                quantityInput.value = currentValue + 1;
-                updateItemTotal(this.closest('.cart-item'));
-            } else if (action === 'decrease' && currentValue > 1) {
-                quantityInput.value = currentValue - 1;
-                updateItemTotal(this.closest('.cart-item'));
-            }
-            
-            // Add animation
-            this.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-            
-            // Here you would typically send AJAX request to update cart
-            // updateCartItemQuantity(itemId, quantityInput.value);
-        });
-    });
-
-    // Remove item buttons
-    document.querySelectorAll('.btn-remove').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const cartItem = this.closest('.cart-item');
-            const itemName = cartItem.querySelector('.item-name').textContent;
-            
-            if (confirm(`Apakah Anda yakin ingin menghapus "${itemName}" dari keranjang?`)) {
-                // Add fade out animation
-                cartItem.style.opacity = '0';
-                cartItem.style.transform = 'translateX(100px)';
-                
-                setTimeout(() => {
-                    cartItem.remove();
-                    updateOrderSummary();
-                    // Here you would typically send AJAX request to remove item
-                    // removeCartItem(itemId);
-                }, 300);
-            }
-        });
-    });
  
-  
-    document.head.insertAdjacentHTML('beforeend', modalStyles);
-});
-</script>
-
 @endsection
+  
+@push('style')
+  @include('customer.cart.css')
+@endpush
+
+@push('script')
+  @include('customer.cart.script')
+@endpush
