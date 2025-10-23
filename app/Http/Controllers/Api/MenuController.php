@@ -84,17 +84,19 @@ class MenuController extends BaseApiController
             // Ambil ulang isi cart
             $cartItems = CartItem::with('menu')->where('cart_id', $cart->id)->get();
             $cartCount = $cartItems->sum('quantity');
+ 
+            $data = [
+                'cart_count' => $cartCount
+            ];
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Produk berhasil ditambahkan ke keranjang.',
-                'cart_count' => $cartCount, 
-            ]);
+            return $this->sendSuccessResponse(true, "Success", $data, 200);
         } catch (\Exception $e) {
+            // return $this->sendErrorResponse(false, "failed", ['exception' => $e->getMessage()], 500);
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-            ], 400);
+                'message' => 'Failed',
+                'data' => 'error',
+            ], 500);
         }
     }
 }

@@ -25,9 +25,9 @@
             <li class="nav-item @if($segment == 'about') {{'active'}} @endif">
               <a class="nav-link" href="/about">About</a>
             </li>
-            <li class="nav-item @if($segment == 'book') {{'active'}} @endif">
+            {{-- <li class="nav-item @if($segment == 'book') {{'active'}} @endif">
               <a class="nav-link" href="/">Book Table</a>
-            </li>
+            </li> --}}
           </ul>
           <div class="user_option"> 
             @auth          

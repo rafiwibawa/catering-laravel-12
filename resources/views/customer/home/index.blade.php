@@ -2,7 +2,7 @@
 
 @section('content')
 
-<section class="offer_section layout_padding-bottom">
+{{-- <section class="offer_section layout_padding-bottom">
   <div class="offer_container">
     <div class="container ">
       <div class="row">
@@ -31,7 +31,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> --}}
  <!-- end offer section -->
  
 <!-- about section -->
