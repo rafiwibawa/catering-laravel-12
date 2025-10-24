@@ -85,4 +85,16 @@ class AuthController extends BaseApiController
             return $this->sendErrorResponse(false, "Login failed", ['exception' => $e->getMessage()], 500);
         }
     }
+
+    public function profile(Request $request)
+    {
+        $user = $request->user()->load('customer');
+        return $this->sendSuccessResponse(true, "Profile fetched", ['user' => $user], 200);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return $this->sendSuccessResponse(true, "Logout Success", [], 200);
+    }
 }
