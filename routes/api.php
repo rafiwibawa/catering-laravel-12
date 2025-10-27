@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/list-carts', [CartController::class, 'ListCart']); 
     Route::get('/cart-count', [CartController::class, 'cartCount']); 
+    Route::post('/carts/checkout', [CartController::class, 'checkout']); 
 
     Route::get('/history', [TransactionController::class, 'HistoryCart']); 
     Route::get('/invoice/{order_code}', [TransactionController::class, 'invoice']);
