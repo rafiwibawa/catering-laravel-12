@@ -18,7 +18,7 @@ class PaymentController extends Controller
         $order = OrderModel::where('id', $merchantOrderId)->first();
 
         if (!$order) {
-            log::info('Order not found', $merchantOrderId);
+            Log::info("Order not found: {$merchantOrderId}");
             return response()->json(['error' => 'Order not found'], 404);
         }
 
