@@ -25,18 +25,18 @@ class PaymentController extends Controller
         Log::info("message", $request->all());
         if ($request->resultCode == "00") {
             // sukses
-            $order->update(['status' => 'paid']);
+            $order->update(['status' => 'completed']);
 
             Payment::create([
                 'order_id'     => $order->id,
                 'payment_date' => now(),
                 'amount'       => $request->amount,
                 'method'       => $request->paymentMethod,
-                'status'       => 'success',
+                'status'       => 'paid',
             ]);
         } else {
             // gagal / expired
-            $order->update(['status' => 'failed']);
+            $order->update(['status' => 'cancelled']);
 
             Payment::create([
                 'order_id'     => $order->id,
