@@ -74,8 +74,8 @@ class CartController extends Controller
                 ];
             })->toArray();
 
-            OrderItem::insert($orderItems);
- 
+            OrderItem::insert($orderItems); 
+            
             // 3. Buat order untuk Duitku
             $orderPayload = [
                 "merchantOrderId"  => $merchantOrderId,
