@@ -58,7 +58,6 @@ Route::redirect('/', '/home');
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/menu', [MenuController::class, 'index'])->name('customer.menu');
  
-Route::post('/duitku/callback', [PaymentController::class, 'callback'])->name('duitku.callback');
 Route::get('/duitku/return', [PaymentController::class, 'return'])->name('duitku.return');
 
 Route::middleware(['auth', 'role:customer'])->group(function () { 

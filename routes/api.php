@@ -7,12 +7,15 @@ use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\CartController; 
 use App\Http\Controllers\Api\TransactionController;
 
+use App\Http\Controllers\Customer\PaymentController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']); 
  
 Route::get('/list-menu', [MenuController::class, 'listMenu']); 
 Route::get('/list-categories', [MenuController::class, 'listCategories']); 
+
+Route::post('/duitku/callback', [PaymentController::class, 'callback'])->name('duitku.callback');
 
 Route::middleware('auth:sanctum')->group(function () {  
     Route::get('/menu/add-to-cart/{id}', [MenuController::class, 'addToCart']); 

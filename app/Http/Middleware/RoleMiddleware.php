@@ -16,7 +16,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, ...$roles): Response
     { 
          if (!auth()->check()) {
-            return redirect('/login'); // atau return response unauthorized
+            return redirect('/login');  
         }
 
         if (!in_array(auth()->user()->role, $roles)) {
