@@ -17,6 +17,7 @@ use App\Http\Controllers\Customer\AboutController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\TransactionController;
 use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\PaymentController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
