@@ -20,6 +20,7 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Order not found'], 404);
         }
 
+        Log::info("message", $request->all());
         if ($request->resultCode == "00") {
             // sukses
             $order->update(['status' => 'paid']);
