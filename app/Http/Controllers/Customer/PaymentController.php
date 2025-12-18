@@ -47,6 +47,6 @@ class PaymentController extends Controller
 
     public function return(Request $request)
     {
-        return view('customer.transaction.index');
+        return redirect('transaction');
     }
 }
