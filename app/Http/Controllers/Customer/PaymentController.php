@@ -15,7 +15,7 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
         $merchantOrderId = $request->merchantOrderId;
-        $order = OrderModel::where('id', $merchantOrderId)->first();
+        $order = OrderModel::where('order_code', $merchantOrderId)->first();
 
         if (!$order) {
             Log::info("Order not found: {$merchantOrderId}");
