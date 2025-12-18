@@ -58,6 +58,9 @@ Route::redirect('/', '/home');
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/menu', [MenuController::class, 'index'])->name('customer.menu');
  
+Route::post('/duitku/callback', [PaymentController::class, 'callback'])->name('duitku.callback');
+Route::get('/duitku/return', [PaymentController::class, 'return'])->name('duitku.return');
+
 Route::middleware(['auth', 'role:customer'])->group(function () { 
     Route::get('/about', [AboutController::class, 'index']);
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
@@ -76,8 +79,6 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/transaction/data', [TransactionController::class, 'data']);
     Route::get('/transaction/invoice/{id}', [TransactionController::class, 'invoice'])->name('transaction.invoice');
 
-    Route::post('/duitku/callback', [PaymentController::class, 'callback'])->name('duitku.callback');
-    Route::get('/duitku/return', [PaymentController::class, 'return'])->name('duitku.return');
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
