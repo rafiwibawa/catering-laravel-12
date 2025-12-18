@@ -26,7 +26,7 @@ class TransactionController extends Controller
         $customerId = Auth::user()->customer->id;
 
         $query = Order::where('customer_id', $customerId)->with(['customer', 'items.menu', 'payment'])
-            ->orderByDesc('order_date');
+            ->orderByDesc('id');
 
         // === Filter tanggal & status ===
         if ($request->filled('start_date')) {
