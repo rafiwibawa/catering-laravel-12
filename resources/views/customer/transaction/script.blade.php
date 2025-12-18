@@ -160,8 +160,8 @@
             const getStatusBadge = (status) => {
                 const badges = {
                     'pending': '<span class="badge bg-warning text-dark">Pending</span>',
-                    'success': '<span class="badge bg-success">Berhasil</span>',
-                    'failed': '<span class="badge bg-danger">Gagal</span>'
+                    'completed': '<span class="badge bg-success">Berhasil</span>',
+                    'cancelled': '<span class="badge bg-danger">Gagal</span>'
                 };
                 return badges[status] || '<span class="badge bg-secondary">Tidak diketahui</span>';
             }
