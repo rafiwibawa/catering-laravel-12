@@ -47,6 +47,6 @@ class PaymentController extends Controller
 
     public function return(Request $request)
     {
-        return view('payment.return', ['data' => $request->all()]);
+        return view('customer.transaction.index');
     }
 }
