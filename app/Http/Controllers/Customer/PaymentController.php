@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Transaction;
-use App\Models\Order;
+use App\Models\Order as OrderModel;
 use App\Models\Payment;
 
 class PaymentController extends Controller
@@ -14,7 +14,7 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
         $merchantOrderId = $request->merchantOrderId;
-        $order = Order::where('id', $merchantOrderId)->first();
+        $order = OrderModel::where('id', $merchantOrderId)->first();
 
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);
