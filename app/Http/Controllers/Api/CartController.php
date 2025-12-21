@@ -151,4 +151,63 @@ class CartController extends BaseApiController
             ], 500);
         }
     }
+
+    public function removeItem($id)
+    {
+        try {
+            $item = CartItem::findOrFail($id);
+            $item->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Item berhasil dihapus',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Item gagal dihapus',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function plusItem($id)
+    {
+        try {
+            $item = CartItem::findOrFail($id);
+            $item->quantity++;
+            $item->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Item berhasil diupdate',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Item gagal diupdate',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function minusItem($id){
+        try {
+            $item = CartItem::findOrFail($id);
+            if ($item->quantity > 1) {
+                $item->quantity--;
+                $item->save();
+            } else {
+                $item->delete();
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Item berhasil diupdate',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Item gagal diupdate',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
